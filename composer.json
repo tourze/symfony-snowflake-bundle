@@ -1,0 +1,33 @@
+{
+  "name": "tourze/symfony-snowflake-bundle",
+  "description": "雪花ID模块",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "require": {
+    "php": "^8.1",
+    "symfony/config": "^6.4",
+    "symfony/dependency-injection": "^6.4",
+    "symfony/http-kernel": "^6.4",
+    "symfony/http-foundation": "^6.4",
+    "symfony/framework-bundle": "^6.4",
+    "snc/redis-bundle": "^4.8",
+    "godruoyi/php-snowflake": "^3.1.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Tourze\\SnowflakeBundle\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tourze\\SnowflakeBundle\\Tests\\": "tests"
+    }
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^10.0"
+  },
+  "scripts": {
+    "phpstan": "phpstan analyse src -l 1"
+  }
+}
