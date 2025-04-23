@@ -11,6 +11,7 @@
     "symfony/http-foundation": "^6.4",
     "symfony/framework-bundle": "^6.4",
     "snc/redis-bundle": "^4.8",
+    "symfony/yaml": "^6.4 || ^7.1",
     "godruoyi/php-snowflake": "^3.1.1"
   },
   "autoload": {
