@@ -1,4 +1,4 @@
-name: Composer dependency analyse
+name: Composer Require Check
 
 on:
   push:
@@ -32,6 +32,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
 
-      - name: Detect composer dependency issues
-        run: vendor/bin/composer-dependency-analyser
-
+      - name: ComposerRequireChecker
+        uses: docker://webfactory/composer-require-checker:4.5.0
