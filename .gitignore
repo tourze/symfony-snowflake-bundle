@@ -1,2 +1,4 @@
 /coverage
-/.phpunit.result.cache 
+/.phpunit.result.cache
+/var/
+/.idea
