@@ -6,7 +6,6 @@
   "require": {
     "php": "^8.1",
     "godruoyi/php-snowflake": "^3.1.1",
-    "snc/redis-bundle": "^4.8",
     "symfony/config": "^6.4",
     "symfony/console": "^6.4",
     "symfony/dependency-injection": "^6.4",
