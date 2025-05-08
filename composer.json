@@ -5,20 +5,24 @@
   "license": "MIT",
   "require": {
     "php": "^8.1",
-    "symfony/config": "^6.4",
-    "symfony/dependency-injection": "^6.4",
-    "symfony/http-kernel": "^6.4",
-    "symfony/http-foundation": "^6.4",
-    "symfony/framework-bundle": "^6.4",
-    "snc/redis-bundle": "^4.8",
-    "symfony/yaml": "^6.4 || ^7.1",
     "godruoyi/php-snowflake": "^3.1.1",
+    "snc/redis-bundle": "^4.8",
+    "symfony/config": "^6.4",
+    "symfony/console": "^6.4",
+    "symfony/dependency-injection": "^6.4",
+    "symfony/event-dispatcher": "^6.4",
+    "symfony/expression-language": "^6.4",
+    "symfony/framework-bundle": "^6.4",
+    "symfony/http-foundation": "^6.4",
+    "symfony/http-kernel": "^6.4",
+    "symfony/messenger": "^6.4",
     "symfony/property-access": "^6.4",
     "symfony/string": "^6.4",
-    "symfony/event-dispatcher": "^6.4",
-    "symfony/messenger": "^6.4",
-    "symfony/console": "^6.4",
-    "symfony/expression-language": "^6.4"
+    "symfony/yaml": "^6.4 || ^7.1"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^10.0"
   },
   "autoload": {
     "psr-4": {
@@ -29,9 +33,5 @@
     "psr-4": {
       "Tourze\\SnowflakeBundle\\Tests\\": "tests"
     }
-  },
-  "require-dev": {
-    "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^10.0"
   }
 }
