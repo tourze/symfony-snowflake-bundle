@@ -12,7 +12,13 @@
     "symfony/framework-bundle": "^6.4",
     "snc/redis-bundle": "^4.8",
     "symfony/yaml": "^6.4 || ^7.1",
-    "godruoyi/php-snowflake": "^3.1.1"
+    "godruoyi/php-snowflake": "^3.1.1",
+    "symfony/property-access": "^6.4",
+    "symfony/string": "^6.4",
+    "symfony/event-dispatcher": "^6.4",
+    "symfony/messenger": "^6.4",
+    "symfony/console": "^6.4",
+    "symfony/expression-language": "^6.4"
   },
   "autoload": {
     "psr-4": {
