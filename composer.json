@@ -17,13 +17,13 @@
     "symfony/messenger": "^6.4",
     "symfony/property-access": "^6.4",
     "symfony/string": "^6.4",
-    "symfony/yaml": "^6.4 || ^7.1"
+    "symfony/yaml": "^6.4 || ^7.1",
+    "tourze/symfony-integration-test-kernel": "0.0.*"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.1",
     "phpunit/phpunit": "^10.0",
-    "symfony/phpunit-bridge": "^6.4",
-    "tourze/integration-test-kernel": "0.0.*"
+    "symfony/phpunit-bridge": "^6.4"
   },
   "autoload": {
     "psr-4": {
