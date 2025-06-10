@@ -3,89 +3,95 @@
 namespace Tourze\SnowflakeBundle\Tests\Integration;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Tourze\IntegrationTestKernel\IntegrationTestKernel;
 use Tourze\SnowflakeBundle\Service\ResolverFactory;
 use Tourze\SnowflakeBundle\Service\Snowflake;
+use Tourze\SnowflakeBundle\SnowflakeBundle;
 
-/**
- * 测试SnowflakeBundle与Symfony框架的集成
- */
 class SnowflakeIntegrationTest extends KernelTestCase
 {
-    protected static function getKernelClass(): string
+    protected static function createKernel(array $options = []): KernelInterface
     {
-        return IntegrationTestKernel::class;
+        $env = $options['environment'] ?? $_ENV['APP_ENV'] ?? $_SERVER['APP_ENV'] ?? 'test';
+        $debug = $options['debug'] ?? $_ENV['APP_DEBUG'] ?? $_SERVER['APP_DEBUG'] ?? true;
+
+        return new IntegrationTestKernel($env, $debug, [
+            SnowflakeBundle::class => ['all' => true],
+        ]);
     }
 
     protected function setUp(): void
     {
-        // 启动内核
         self::bootKernel();
     }
 
-    /**
-     * 测试Snowflake服务是否正确注册
-     */
-    public function testSnowflakeServiceRegistration(): void
+    protected function tearDown(): void
+    {
+        self::ensureKernelShutdown();
+        parent::tearDown();
+    }
+
+    public function test_snowflakeService_isRegisteredInContainer(): void
     {
         $container = static::getContainer();
 
-        // 测试Snowflake服务是否存在
         $this->assertTrue($container->has(Snowflake::class));
 
-        // 测试ResolverFactory服务是否存在
-        $this->assertTrue($container->has(ResolverFactory::class));
-
-        // 获取Snowflake服务实例
         $snowflake = $container->get(Snowflake::class);
         $this->assertInstanceOf(Snowflake::class, $snowflake);
+    }
 
-        // 获取ResolverFactory服务实例
+    public function test_resolverFactoryService_isRegisteredInContainer(): void
+    {
+        $container = static::getContainer();
+
+        $this->assertTrue($container->has(ResolverFactory::class));
+
         $resolverFactory = $container->get(ResolverFactory::class);
         $this->assertInstanceOf(ResolverFactory::class, $resolverFactory);
     }
 
-    /**
-     * 测试Snowflake服务是否能正确生成雪花ID
-     */
-    public function testSnowflakeIdGeneration(): void
+    public function test_snowflakeService_generatesValidIds(): void
     {
         $container = static::getContainer();
         $snowflake = $container->get(Snowflake::class);
 
-        // 生成一个雪花ID
-        $id = $snowflake->id();
+        $id1 = $snowflake->id();
+        $id2 = $snowflake->id();
 
-        // 验证ID是一个非空字符串
-        $this->assertIsString($id);
-        $this->assertNotEmpty($id);
+        // 验证生成的ID是字符串
+        $this->assertIsString($id1);
+        $this->assertIsString($id2);
 
-        // 验证ID是一个数字字符串
-        $this->assertIsNumeric($id);
+        // 验证ID是数字字符串
+        $this->assertIsNumeric($id1);
+        $this->assertIsNumeric($id2);
 
-        // 验证ID的长度（应该至少有10位数）
-        $this->assertGreaterThan(10, strlen($id));
+        // 验证ID的唯一性
+        $this->assertNotEquals($id1, $id2);
+
+        // 验证ID是递增的
+        $this->assertGreaterThan($id1, $id2);
     }
 
-    /**
-     * 测试在短时间内多次调用id方法返回唯一ID
-     */
-    public function testSnowflakeIdUniqueness(): void
+    public function test_snowflakeService_generatesUniqueIdsInBatch(): void
     {
         $container = static::getContainer();
         $snowflake = $container->get(Snowflake::class);
 
         $ids = [];
-        $count = 10; // 生成10个ID
+        $count = 50;
 
         for ($i = 0; $i < $count; $i++) {
             $ids[] = $snowflake->id();
         }
 
-        // 验证生成的所有ID都是唯一的
+        // 验证所有ID都是唯一的
         $uniqueIds = array_unique($ids);
         $this->assertCount($count, $uniqueIds);
 
-        // 验证ID是按顺序生成的（每个ID应该大于前一个）
+        // 验证ID是按顺序生成的
         for ($i = 1; $i < $count; $i++) {
             $this->assertGreaterThan($ids[$i - 1], $ids[$i]);
         }
