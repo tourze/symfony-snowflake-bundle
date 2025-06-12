@@ -11,7 +11,7 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 class ResolverFactory
 {
     public function __construct(
-        #[Autowire(service: 'snc_redis.default')] private readonly ?Redis $redis = null,
+        #[Autowire(service: 'snc_redis.snowflake')] private readonly ?Redis $redis = null,
     )
     {
     }
