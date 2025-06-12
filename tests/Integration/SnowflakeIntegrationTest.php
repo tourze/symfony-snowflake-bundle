@@ -36,6 +36,8 @@ class SnowflakeIntegrationTest extends KernelTestCase
     {
         $container = static::getContainer();
 
+        $this->assertTrue($container->has('snc_redis.phpredis_factory'));
+        $this->assertTrue($container->has('snc_redis.snowflake'));
         $this->assertTrue($container->has(Snowflake::class));
 
         $snowflake = $container->get(Snowflake::class);
