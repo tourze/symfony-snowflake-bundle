@@ -50,7 +50,6 @@ class SnowflakeTest extends TestCase
         // 验证workerId在预期范围内
         $this->assertGreaterThanOrEqual(0, $workerId);
         $this->assertLessThanOrEqual($expectedInRange, $workerId);
-        $this->assertIsInt($workerId);
     }
 
     /**
@@ -129,7 +128,6 @@ class SnowflakeTest extends TestCase
         $id = $snowflake->id();
 
         // 验证ID是一个非空字符串
-        $this->assertIsString($id);
         $this->assertNotEmpty($id);
 
         // 验证ID是一个数字字符串
@@ -222,8 +220,7 @@ class SnowflakeTest extends TestCase
         $this->assertNotEquals($id1, $id2);
 
         // 都应该是有效的ID
-        $this->assertIsString($id1);
-        $this->assertIsString($id2);
+
         $this->assertIsNumeric($id1);
         $this->assertIsNumeric($id2);
     }

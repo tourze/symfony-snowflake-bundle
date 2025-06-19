@@ -27,15 +27,15 @@ class Snowflake
     public static function getGenerator(int $datacenter = -1, int $workerId = -1, ?SequenceResolver $resolver = null): BaseSnowflake
     {
         $key = "{$datacenter}-{$workerId}";
-        if (!isset(static::$generators[$key])) {
+        if (!isset(self::$generators[$key])) {
             $generator = new BaseSnowflake(
                 $datacenter,
                 $workerId,
             );
             $generator->setSequenceResolver($resolver ?: new RandomSequenceResolver());
-            static::$generators[$key] = $generator;
+            self::$generators[$key] = $generator;
         }
-        return static::$generators[$key];
+        return self::$generators[$key];
     }
 
     private BaseSnowflake $generator;

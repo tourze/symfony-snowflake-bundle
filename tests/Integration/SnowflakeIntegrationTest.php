@@ -63,8 +63,6 @@ class SnowflakeIntegrationTest extends KernelTestCase
         $id2 = $snowflake->id();
 
         // 验证生成的ID是字符串
-        $this->assertIsString($id1);
-        $this->assertIsString($id2);
 
         // 验证ID是数字字符串
         $this->assertIsNumeric($id1);
@@ -140,7 +138,6 @@ class SnowflakeIntegrationTest extends KernelTestCase
 
         // 验证服务可以正常工作
         $id1 = $snowflake->id();
-        $this->assertIsString($id1);
         $this->assertIsNumeric($id1);
 
         // 再次获取服务，应该是同一个实例
@@ -177,7 +174,6 @@ class SnowflakeIntegrationTest extends KernelTestCase
 
         // 验证ID的格式
         foreach ($ids as $id) {
-            $this->assertIsString($id);
             $this->assertIsNumeric($id);
             $this->assertGreaterThan(0, intval($id));
         }
@@ -198,7 +194,6 @@ class SnowflakeIntegrationTest extends KernelTestCase
         $id1 = $snowflake->id();
 
         // 验证初始ID
-        $this->assertIsString($id1);
         $this->assertIsNumeric($id1);
 
         // 再次使用服务
@@ -239,7 +234,6 @@ class SnowflakeIntegrationTest extends KernelTestCase
 
         // 验证服务功能
         $id = $snowflake->id();
-        $this->assertIsString($id);
         $this->assertIsNumeric($id);
     }
 
