@@ -93,18 +93,11 @@ class ResolverFactoryTest extends TestCase
         $resolver1 = $resolverFactory1->resolver();
         $this->assertInstanceOf(SequenceResolver::class, $resolver1);
 
-        // 测试有Redis情况 - 使用mock避免实际Redis连接
+        // 测试有Redis情况 - 确保Redis mock正确设置了所有必要的方法
         $redis = $this->createMock(Redis::class);
-
-        // 创建一个部分模拟的ResolverFactory，只模拟resolver方法返回
-        $resolverFactory2 = $this->getMockBuilder(ResolverFactory::class)
-            ->setConstructorArgs([$redis])
-            ->onlyMethods(['resolver'])
-            ->getMock();
-
-        $mockResolver = $this->createMock(SequenceResolver::class);
-        $resolverFactory2->method('resolver')->willReturn($mockResolver);
-
+        $redis->method('ping')->willReturn(true); // 模拟ping成功
+        $redis->method('eval')->willReturn(1); // 模拟lua脚本执行结果
+        $resolverFactory2 = new ResolverFactory($redis);
         $resolver2 = $resolverFactory2->resolver();
         $this->assertInstanceOf(SequenceResolver::class, $resolver2);
     }

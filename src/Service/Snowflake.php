@@ -32,7 +32,7 @@ class Snowflake
                 $datacenter,
                 $workerId,
             );
-            $generator->setSequenceResolver($resolver ?: new RandomSequenceResolver());
+            $generator->setSequenceResolver($resolver ?? new RandomSequenceResolver());
             self::$generators[$key] = $generator;
         }
         return self::$generators[$key];

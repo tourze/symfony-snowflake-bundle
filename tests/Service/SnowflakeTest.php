@@ -55,7 +55,7 @@ class SnowflakeTest extends TestCase
     /**
      * 为testGenerateWorkerId提供测试数据
      */
-    public function workerIdDataProvider(): array
+    public static function workerIdDataProvider(): array
     {
         return [
             'default_max_worker_id' => ['localhost', 31, 31],
