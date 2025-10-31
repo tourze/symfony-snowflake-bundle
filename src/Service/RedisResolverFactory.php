@@ -11,9 +11,9 @@ use Tourze\RedisDedicatedConnectionBundle\Attribute\WithDedicatedConnection;
  * 生产环境的 ResolverFactory，具有专用 Redis 连接
  */
 #[WithDedicatedConnection(channel: 'snowflake')]
-class RedisResolverFactory implements ResolverFactoryInterface
+readonly class RedisResolverFactory implements ResolverFactoryInterface
 {
-    private readonly ResolverFactory $resolverFactory;
+    private ResolverFactory $resolverFactory;
 
     public function __construct(
         \Redis $redis,
