@@ -1,17 +1,5 @@
 # Symfony Snowflake Bundle 测试文档
 
-## 测试结构
-
-测试分为两个主要部分：
-
-1. **服务单元测试** - `Service/` 目录
-   - `ResolverFactoryTest.php` - 测试序列分配器工厂
-   - `SnowflakeTest.php` - 测试雪花ID生成器
-
-2. **集成测试** - `Integration/` 目录
-   - `IntegrationTestKernel.php` - 测试用Symfony内核
-   - `SnowflakeIntegrationTest.php` - 测试Bundle与Symfony的集成
-
 ## 运行测试
 
 在项目根目录执行：

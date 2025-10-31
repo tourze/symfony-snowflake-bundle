@@ -1,0 +1,7 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  # 测试环境：使用基本的 ResolverFactory 而不是 Redis 版本
+  Tourze\SnowflakeBundle\Service\ResolverFactory: ~

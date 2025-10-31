@@ -1,11 +1,45 @@
 # Symfony Snowflake Bundle
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 [![Packagist](https://img.shields.io/packagist/v/tourze/symfony-snowflake-bundle.svg)](https://packagist.org/packages/tourze/symfony-snowflake-bundle)
+
+[![PHP Version](https://img.shields.io/packagist/php-v/tourze/symfony-snowflake-bundle.svg)](https://packagist.org/packages/tourze/symfony-snowflake-bundle)
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/tourze/php-monorepo/ci.yml?branch=master)](https://github.com/tourze/php-monorepo/actions)
+
+[![Coverage Status](https://img.shields.io/codecov/c/github/tourze/php-monorepo)](https://codecov.io/gh/tourze/php-monorepo)
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Install via Composer](#install-via-composer)
+- [Quick Start](#quick-start)
+  - [1. Register the Bundle (if not auto-discovered)](#1-register-the-bundle-if-not-auto-discovered)
+  - [2. Generate a Snowflake ID](#2-generate-a-snowflake-id)
+- [Usage](#usage)
+  - [Basic Usage](#basic-usage)
+  - [ID Format and Structure](#id-format-and-structure)
+  - [WorkerId Generation](#workerid-generation)
+  - [Redis-Based Sequence Resolver](#redis-based-sequence-resolver)
+- [Configuration](#configuration)
+- [Advanced Usage](#advanced-usage)
+  - [Custom Sequence Resolver](#custom-sequence-resolver)
+- [Best Practices](#best-practices)
+- [Potential Pitfalls](#potential-pitfalls)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Introduction
 
-A high-performance, distributed Snowflake ID generator bundle for Symfony applications. This bundle implements Twitter's Snowflake algorithm to generate unique, time-ordered, 64-bit IDs for distributed systems. It is designed for scenarios requiring globally unique IDs under high concurrency.
+A high-performance, distributed Snowflake ID generator bundle for Symfony applications. This bundle implements 
+Twitter's Snowflake algorithm to generate unique, time-ordered, 64-bit IDs for distributed systems. It is 
+designed for scenarios requiring globally unique IDs under high concurrency.
 
 ## Features
 
@@ -13,7 +47,8 @@ A high-performance, distributed Snowflake ID generator bundle for Symfony applic
 - Built-in Redis sequence resolver to ensure uniqueness in high-concurrency environments
 - Auto-generates WorkerId based on hostname for distributed scenario support
 - Zero configuration required for basic usage
-- Fully compatible with Symfony 6.4/7.1+
+- Fully compatible with Symfony 7.3+
+- Graceful fallback from Redis to RandomSequenceResolver when Redis is unavailable
 - Autowiring support for easy integration with Symfony services
 - Thread-safe ID generation
 - Time-ordered IDs for efficient database indexing
@@ -23,7 +58,7 @@ A high-performance, distributed Snowflake ID generator bundle for Symfony applic
 ### Requirements
 
 - PHP >= 8.1
-- Symfony >= 6.4
+- Symfony >= 7.3
 - Redis (recommended for distributed sequence safety)
 
 ### Install via Composer
@@ -113,17 +148,20 @@ This ensures different server instances generally get different WorkerIds withou
 
 ### Redis-Based Sequence Resolver
 
-When `snc/redis-bundle` is installed and configured in your application, the Snowflake bundle automatically uses Redis for sequence distribution, which provides:
-
+When Redis is available, the bundle automatically uses `RedisSequenceResolver` for:
 - Enhanced uniqueness guarantees under high concurrency
 - Improved resistance to clock drift
 - Better distribution of IDs across multiple instances
+
+When Redis is unavailable, it gracefully falls back to `RandomSequenceResolver` to ensure service availability.
 
 ## Configuration
 
 For basic usage, no extra configuration is required. The bundle works with sensible defaults.
 
-### Advanced Configuration
+## Advanced Usage
+
+### Custom Sequence Resolver
 
 For more advanced scenarios, you may extend the `ResolverFactory` to provide a custom sequence resolver:
 
@@ -151,19 +189,31 @@ Then register your custom factory in your service configuration.
 
 - **Redis in Production**: Always use Redis in production environments for sequence distribution
 - **Clock Synchronization**: Ensure your server clocks are synchronized with NTP
-- **Worker ID Management**: For large distributed deployments, consider implementing a centralized WorkerId assignment mechanism
-- **ID Storage**: Store Snowflake IDs as `BIGINT` in databases (or strings if your DB doesn't support 64-bit integers)
+- **Worker ID Management**: For large distributed deployments, consider implementing a centralized WorkerId 
+  assignment mechanism
+- **ID Storage**: Store Snowflake IDs as `BIGINT` in databases (or strings if your DB doesn't support 
+  64-bit integers)
 - **Benchmarking**: Test performance in your environment as high throughput may require tuning
 
 ## Potential Pitfalls
 
 - **Clock Moving Backwards**: If server time moves backward due to NTP adjustments, duplicate IDs might be generated
-- **Worker ID Conflicts**: In very large deployments, hostname-based WorkerId generation might lead to conflicts
+- **Worker ID Conflicts**: In very large deployments, hostname-based WorkerId generation might lead to 
+  conflicts
 - **Performance without Redis**: Without Redis, high concurrency might lead to duplicates under extreme circumstances
+
+## Changelog
+
+### 0.0.x
+- Initial release with Snowflake ID generation support
+- Redis-based sequence resolver with graceful fallback
+- Automatic WorkerId generation based on hostname
+- Full Symfony 7.3+ integration with autowiring support
 
 ## Contributing
 
-Issues and pull requests are welcome! Please visit the [GitHub repository](https://github.com/tourze/symfony-snowflake-bundle) to contribute.
+Issues and pull requests are welcome! Please visit the 
+[GitHub repository](https://github.com/tourze/php-monorepo) to contribute.
 
 ## License
 

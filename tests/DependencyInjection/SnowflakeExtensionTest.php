@@ -2,15 +2,27 @@
 
 namespace Tourze\SnowflakeBundle\Tests\DependencyInjection;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
+use Tourze\PHPUnitSymfonyUnitTest\AbstractDependencyInjectionExtensionTestCase;
 use Tourze\SnowflakeBundle\DependencyInjection\SnowflakeExtension;
 
-class SnowflakeExtensionTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(SnowflakeExtension::class)]
+final class SnowflakeExtensionTest extends AbstractDependencyInjectionExtensionTestCase
 {
-    public function test_load_registersExpectedServices(): void
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    public function testLoadRegistersExpectedServices(): void
     {
         $container = new ContainerBuilder();
+        $container->setParameter('kernel.environment', 'test');
         $extension = new SnowflakeExtension();
 
         $extension->load([], $container);
@@ -20,14 +32,14 @@ class SnowflakeExtensionTest extends TestCase
         $this->assertTrue($container->hasDefinition('Tourze\SnowflakeBundle\Service\Snowflake'));
     }
 
-    public function test_implements_extensionInterface(): void
+    public function testImplementsExtensionInterface(): void
     {
         $extension = new SnowflakeExtension();
 
-        $this->assertInstanceOf(\Symfony\Component\DependencyInjection\Extension\ExtensionInterface::class, $extension);
+        $this->assertInstanceOf(ExtensionInterface::class, $extension);
     }
 
-    public function test_getAlias_returnsSnowflake(): void
+    public function testGetAliasReturnsSnowflake(): void
     {
         $extension = new SnowflakeExtension();
 

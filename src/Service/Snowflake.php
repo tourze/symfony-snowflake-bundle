@@ -35,6 +35,7 @@ class Snowflake
             $generator->setSequenceResolver($resolver ?? new RandomSequenceResolver());
             self::$generators[$key] = $generator;
         }
+
         return self::$generators[$key];
     }
 
@@ -42,9 +43,13 @@ class Snowflake
 
     public function __construct(private readonly ResolverFactory $resolverFactory)
     {
+        $hostname = gethostname();
+        if (false === $hostname) {
+            $hostname = 'localhost';
+        }
         $this->generator = static::getGenerator(
             -1,
-            self::generateWorkerId(gethostname()),
+            self::generateWorkerId($hostname),
             $this->resolverFactory->resolver(),
         );
     }
@@ -52,8 +57,9 @@ class Snowflake
     /**
      * 生成基于主机名的机器ID
      *
-     * @param string $hostname 主机名
-     * @param int $maxWorkerId 最大机器ID，通常是机器ID的位数对应的最大值
+     * @param string $hostname    主机名
+     * @param int    $maxWorkerId 最大机器ID，通常是机器ID的位数对应的最大值
+     *
      * @return int 生成的机器ID
      */
     public static function generateWorkerId(string $hostname, int $maxWorkerId = 31): int

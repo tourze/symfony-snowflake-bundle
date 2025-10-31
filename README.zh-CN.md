@@ -1,11 +1,45 @@
 # Symfony Snowflake 雪花 ID 生成器
 
+[English](README.md) | [中文](README.zh-CN.md)
+
 [![Packagist](https://img.shields.io/packagist/v/tourze/symfony-snowflake-bundle.svg)](https://packagist.org/packages/tourze/symfony-snowflake-bundle)
+
+[![PHP Version](https://img.shields.io/packagist/php-v/tourze/symfony-snowflake-bundle.svg)](https://packagist.org/packages/tourze/symfony-snowflake-bundle)
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/tourze/php-monorepo/ci.yml?branch=master)](https://github.com/tourze/php-monorepo/actions)
+
+[![Coverage Status](https://img.shields.io/codecov/c/github/tourze/php-monorepo)](https://codecov.io/gh/tourze/php-monorepo)
+
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## 目录
+
+- [项目简介](#项目简介)
+- [功能特性](#功能特性)
+- [安装方法](#安装方法)
+  - [环境要求](#环境要求)
+  - [通过 Composer 安装](#通过-composer-安装)
+- [快速开始](#快速开始)
+  - [1. 注册 Bundle（如未自动发现）](#1-注册-bundle如未自动发现)
+  - [2. 生成雪花 ID](#2-生成雪花-id)
+- [基本用法](#基本用法)
+  - [基本使用](#基本使用)
+  - [ID 格式与结构](#id-格式与结构)
+  - [WorkerId 生成逻辑](#workerid-生成逻辑)
+  - [基于 Redis 的序列分配器](#基于-redis-的序列分配器)
+- [高级用法](#高级用法)
+  - [自定义序列分配器](#自定义序列分配器)
+- [配置说明](#配置说明)
+  - [监控与调试](#监控与调试)
+- [最佳实践](#最佳实践)
+- [注意事项](#注意事项)
+- [贡献指南](#贡献指南)
+- [许可协议](#许可协议)
 
 ## 项目简介
 
-为 Symfony 应用提供高性能、分布式的雪花（Snowflake）ID 生成服务。本模块实现了 Twitter 的雪花算法，用于生成有序、唯一的 64 位 ID，特别适用于分布式系统和需要全局唯一 ID 的高并发场景。
+为 Symfony 应用提供高性能、分布式的雪花（Snowflake）ID 生成服务。本模块实现了 Twitter 的雪花算法，
+用于生成有序、唯一的 64 位 ID，特别适用于分布式系统和需要全局唯一 ID 的高并发场景。
 
 ## 功能特性
 
@@ -13,7 +47,8 @@
 - 内置 Redis 序列分配器，确保高并发环境下的唯一性
 - 自动基于主机名生成 WorkerId，支持分布式部署场景
 - 零配置即可使用，简单直观
-- 完全兼容 Symfony 6.4/7.1+
+- 完全兼容 Symfony 7.3+
+- Redis 不可用时优雅降级到 RandomSequenceResolver
 - 支持 Symfony 自动注入，便于与服务集成
 - 线程安全的 ID 生成机制
 - 生成的 ID 具有时间顺序性，利于数据库索引优化
@@ -23,7 +58,7 @@
 ### 环境要求
 
 - PHP >= 8.1
-- Symfony >= 6.4
+- Symfony >= 7.3
 - Redis（推荐用于分布式序列安全）
 
 ### 通过 Composer 安装
@@ -32,7 +67,7 @@
 composer require tourze/symfony-snowflake-bundle
 ```
 
-## 快速上手
+## 快速开始
 
 ### 1. 注册 Bundle（如未自动发现）
 
@@ -74,9 +109,9 @@ class ProductService
 }
 ```
 
-## 使用说明
+## 基本用法
 
-### 基本用法
+### 基本使用
 
 通过依赖注入引入 Snowflake 服务，然后调用 `id()` 方法：
 
@@ -113,17 +148,18 @@ $workerId = crc32(gethostname()) % 32; // 返回 0-31 之间的值
 
 ### 基于 Redis 的序列分配器
 
-当应用中安装并配置了 `snc/redis-bundle` 后，Snowflake 模块会自动使用 Redis 进行序列分配，提供：
-
+当 Redis 可用时，模块自动使用 `RedisSequenceResolver` 提供：
 - 高并发环境下增强的唯一性保证
 - 更好地抵抗时钟漂移
 - 在多实例间更均匀地分配 ID
 
-## 配置说明
+当 Redis 不可用时，优雅降级到 `RandomSequenceResolver` 以确保服务可用性。
+
+## 高级用法
 
 基本使用场景下无需额外配置，模块采用合理的默认设置。
 
-### 高级配置
+### 自定义序列分配器
 
 对于更高级的场景，可以扩展 `ResolverFactory` 来提供自定义序列分配器：
 
@@ -147,12 +183,21 @@ class CustomResolverFactory extends ResolverFactory
 
 然后在服务配置中注册自定义工厂。
 
+## 配置说明
+
+基本使用场景下无需额外配置，模块采用合理的默认设置。
+
+### 监控与调试
+
+在生产环境中，建议监控 ID 生成的性能和唯一性，确保系统正常运行。
+
 ## 最佳实践
 
 - **生产环境使用 Redis**：始终在生产环境中使用 Redis 进行序列分配
 - **时钟同步**：确保服务器时钟通过 NTP 保持同步
 - **WorkerId 管理**：对于大型分布式部署，考虑实现集中式 WorkerId 分配机制
-- **ID 存储**：在数据库中使用 `BIGINT` 类型存储雪花 ID（如果数据库不支持 64 位整数，则使用字符串）
+- **ID 存储**：在数据库中使用 `BIGINT` 类型存储雪花 ID（如果数据库不支持 64 位整数，
+  则使用字符串）
 - **性能测试**：在您的环境中进行性能测试，高吞吐量可能需要调优
 
 ## 注意事项
@@ -161,9 +206,18 @@ class CustomResolverFactory extends ResolverFactory
 - **WorkerId 冲突**：在非常大的部署中，基于主机名的 WorkerId 生成可能导致冲突
 - **无 Redis 时的性能**：没有 Redis 的情况下，极端高并发可能导致重复
 
+## 更新日志
+
+### 0.0.x
+- 初始版本，支持雪花 ID 生成
+- 基于 Redis 的序列分配器，支持优雅降级
+- 基于主机名自动生成 WorkerId
+- 完整的 Symfony 7.3+ 集成，支持自动注入
+
 ## 贡献指南
 
-欢迎提交 Issue 和 Pull Request！请访问 [GitHub 仓库](https://github.com/tourze/symfony-snowflake-bundle) 参与贡献。
+欢迎提交 Issue 和 Pull Request！请访问 
+[GitHub 仓库](https://github.com/tourze/php-monorepo) 参与贡献。
 
 ## 许可协议
 

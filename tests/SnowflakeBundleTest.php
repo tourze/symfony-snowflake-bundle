@@ -1,24 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tourze\SnowflakeBundle\Tests;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractBundleTestCase;
 use Tourze\SnowflakeBundle\SnowflakeBundle;
 
-class SnowflakeBundleTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(SnowflakeBundle::class)]
+#[RunTestsInSeparateProcesses]
+final class SnowflakeBundleTest extends AbstractBundleTestCase
 {
-    public function test_getPath_returnsCorrectPath(): void
-    {
-        $bundle = new SnowflakeBundle();
-        $expectedPath = dirname(__DIR__) . '/src';
-
-        $this->assertEquals($expectedPath, $bundle->getPath());
-    }
-
-    public function test_implements_bundleInterface(): void
-    {
-        $bundle = new SnowflakeBundle();
-
-        $this->assertInstanceOf(\Symfony\Component\HttpKernel\Bundle\BundleInterface::class, $bundle);
-    }
 }
